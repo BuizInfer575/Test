@@ -1,18 +1,12 @@
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escáner de Códigos de Barras</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Cargar toastr desde CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script> <!-- Asegúrate de usar la versión correcta -->
 </head>
-
 <body>
     <div class="container">
         <h1>Escáner de Códigos de Barras</h1>
@@ -21,54 +15,17 @@
         <div id="scannedCodes"></div>
         <button id="exportButton">Exportar a Excel</button>
     </div>
-
     <div id="successModal" class="modal">
         <div class="modal-content">
             <p>El archivo se ha guardado exitosamente.</p>
             <button id="closeModalButton">Aceptar</button>
         </div>
     </div>
-
-    <script>
-        toastr.options = {
-            "closeButton": false,
-            "debug": false,
-            "newestOnTop": false,
-            "progressBar": false,
-            "positionClass": "toast-top-right",
-            "preventDuplicates": false,
-            "onclick": null,
-            "showDuration": "300",
-            "hideDuration": "1000",
-            "timeOut": "5000",
-            "extendedTimeOut": "1000",
-            "showEasing": "swing",
-            "hideEasing": "linear",
-            "showMethod": "fadeIn",
-            "hideMethod": "fadeOut"
-        }
-    </script>
-
-<script>
-    document.getElementById("barcodeInput1").addEventListener("keydown", function(event) {
-        if (!event.isTrusted) {
-            return;
-        }
-        event.preventDefault();
-    });
-
-    document.getElementById("barcodeInput2").addEventListener("keydown", function(event) {
-        if (!event.isTrusted) {
-            return;
-        }
-        event.preventDefault();
-    });
-</script>
-
-
     
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script src="script.js"></script>
 </body>
-
 </html>
