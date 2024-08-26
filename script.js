@@ -1,3 +1,18 @@
+// Prevenir la escritura manual en los campos, pero permitir el escaneo
+barcodeInput1.addEventListener("keydown", function(event) {
+    if (!event.isTrusted) {
+        return;
+    }
+    event.preventDefault();
+});
+
+barcodeInput2.addEventListener("keydown", function(event) {
+    if (!event.isTrusted) {
+        return;
+    }
+    event.preventDefault();
+});
+
 const barcodeInput1 = document.getElementById('barcodeInput1');
 const barcodeInput2 = document.getElementById('barcodeInput2');
 const scannedCodesDiv = document.getElementById('scannedCodes');
