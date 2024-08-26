@@ -49,27 +49,22 @@
         }
     </script>
 
-    <script>
-document.getElementById("barcodeInput1").addEventListener("keydown", function(event) {
-    if (!event.isTrusted) {
-        // Si la entrada no es de un teclado normal (como un escáner), permitimos la entrada
-        return;
-    }
+<script>
+    document.getElementById("barcodeInput1").addEventListener("keydown", function(event) {
+        if (!event.isTrusted) {
+            return;
+        }
+        event.preventDefault();
+    });
 
-    // Si la tecla presionada es de un teclado normal, prevenir la entrada
-    event.preventDefault();
-});
-
-document.getElementById("barcodeInput1").addEventListener("paste", function(event) {
-    // Prevenir pegar texto manualmente
-    event.preventDefault();
-});
-
-// Habilitar el segundo campo solo si se ha escaneado algo en el primero
-document.getElementById("barcodeInput1").addEventListener("input", function(event) {
-    document.getElementById("barcodeInput2").disabled = false;
-});
+    document.getElementById("barcodeInput2").addEventListener("keydown", function(event) {
+        if (!event.isTrusted) {
+            return;
+        }
+        event.preventDefault();
+    });
 </script>
+
 
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
