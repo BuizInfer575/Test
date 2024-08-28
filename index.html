@@ -9,9 +9,15 @@
 </head>
 <body>
     <div class="container">
-        <h1>Escáner de Códigos de Barras</h1>
+        <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <img src="logo.png" alt="Logo" style="height: 50px;">
+        </h1>
+        <label for="barcodeInput1" style="display: block; text-align: left; font-size: 0.9rem;">Etiqueta individual:</label>
         <input type="text" id="barcodeInput1" placeholder="Escanea el primer código de barras aquí">
+        
+        <label for="barcodeInput2" style="display: block; text-align: left; font-size: 0.9rem; margin-top: 10px;">Etiqueta hoja de proceso:</label>
         <input type="text" id="barcodeInput2" placeholder="Escanea el segundo código de barras aquí" disabled>
+        
         <div id="scannedCodes"></div>
         <button id="exportButton">Exportar a Excel</button>
     </div>
