@@ -1,37 +1,61 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escáner de Códigos de Barras</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script> -->
+
+
+    <!-- Notificaciones -->
+    <link href="./toastr-master/build/toastr.css" rel="stylesheet" />
+    <script src="./toastr-master/toastr.js"></script>
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
 </head>
+
 <body>
     <div class="container">
-        <h1 style="display: flex; align-items: center; justify-content: center; gap: 10px;">
-            <img src="logo.png" alt="Logo" style="height: 50px;">
-        </h1>
-        <label for="barcodeInput1" style="display: block; text-align: left; font-size: 0.9rem;">Etiqueta individual:</label>
+        <h1>Escáner de Códigos de Barras</h1>
         <input type="text" id="barcodeInput1" placeholder="Escanea el primer código de barras aquí">
-        
-        <label for="barcodeInput2" style="display: block; text-align: left; font-size: 0.9rem; margin-top: 10px;">Etiqueta hoja de proceso:</label>
         <input type="text" id="barcodeInput2" placeholder="Escanea el segundo código de barras aquí" disabled>
-        
         <div id="scannedCodes"></div>
         <button id="exportButton">Exportar a Excel</button>
     </div>
+
     <div id="successModal" class="modal">
         <div class="modal-content">
             <p>El archivo se ha guardado exitosamente.</p>
             <button id="closeModalButton">Aceptar</button>
         </div>
     </div>
-    
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/exceljs/dist/exceljs.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+    <script type="text/javascript">
+        toastr.options = {
+            "closeButton": false,
+            "debug": false,
+            "newestOnTop": false,
+            "progressBar": false,
+            "positionClass": "toast-top-right",
+            "preventDuplicates": false,
+            "onclick": null,
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "5000",
+            "extendedTimeOut": "1000",
+            "showEasing": "swing",
+            "hideEasing": "linear",
+            "showMethod": "fadeIn",
+            "hideMethod": "fadeOut"
+        }
+    </script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script src="xlsx.full.min.js"></script>
+    <script src="exceljs.min.js"></script>
     <script src="script.js"></script>
 </body>
+
 </html>
