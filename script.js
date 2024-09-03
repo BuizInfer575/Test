@@ -1,19 +1,23 @@
 const barcodeInput1 = document.getElementById('barcodeInput1');
 const barcodeInput2 = document.getElementById('barcodeInput2');
+const scannedCodesDiv = document.getElementById('scannedCodes');
+let scannedCodes = [];
 let firstCode = "";
+let inputTimeout = null;
 
 function validarPatron1(codigo) {
-    const patron = /^[A-Z0-9]+[ -]?[A-Z0-9]+$/i; // Actualizado para incluir guiones y letras minúsculas
+    const patron = /^[A-Z0-9]+[ -]?[A-Z0-9]+$/i; // Incluye guiones y letras minúsculas
     return patron.test(codigo);
 }
 
 function validarPatron2(codigo) {
-    const patron = /^[A-Z0-9]+$/i; // Actualizado para incluir guiones y letras minúsculas
+    const patron = /^[A-Z0-9]+$/i; // Incluye guiones y letras minúsculas
     return patron.test(codigo);
 }
 
 function procesarInput(inputElement, validarPatron, siguienteInput) {
-    setTimeout(() => {
+    clearTimeout(inputTimeout);  // Evitar múltiples mensajes
+    inputTimeout = setTimeout(() => {
         const code = inputElement.value.trim();
         if (validarPatron(code)) {
             if (inputElement === barcodeInput1) {
@@ -24,17 +28,23 @@ function procesarInput(inputElement, validarPatron, siguienteInput) {
             } else if (inputElement === barcodeInput2) {
                 const secondCode = code.split(' ')[0];
                 if (firstCode === secondCode) {
-                    alert('Los códigos coinciden');
+                    toastr.success('Los códigos coinciden');
+                    scannedCodes.push(secondCode);
+                    const codeElement = document.createElement('p');
+                    codeElement.textContent = secondCode;
+                    scannedCodesDiv.appendChild(codeElement);
                 } else {
-                    alert('Los códigos no coinciden');
+                    toastr.error('Los códigos no coinciden');
                 }
                 barcodeInput1.disabled = false;
                 barcodeInput2.disabled = true;
+                barcodeInput1.value = '';
+                barcodeInput2.value = '';
                 barcodeInput1.focus();
             }
             inputElement.value = '';
         } else {
-            alert('El código no cumple con el patrón requerido');
+            toastr.error('El código no cumple con el patrón requerido');
             inputElement.value = '';
             if (inputElement === barcodeInput2) {
                 barcodeInput1.disabled = false;
@@ -47,3 +57,49 @@ function procesarInput(inputElement, validarPatron, siguienteInput) {
 
 barcodeInput1.addEventListener('input', () => procesarInput(barcodeInput1, validarPatron1, barcodeInput2));
 barcodeInput2.addEventListener('input', () => procesarInput(barcodeInput2, validarPatron2, barcodeInput1));
+
+// Función para exportar los códigos a un archivo Excel
+async function exportToExcel() {
+    const workbook = new ExcelJS.Workbook();
+    const response = await fetch('plantilla.xlsx');
+    const arrayBuffer = await response.arrayBuffer();
+    await workbook.xlsx.load(arrayBuffer);
+
+    const worksheet = workbook.getWorksheet(1);
+
+    let nextRow = 2; // B2
+    scannedCodes.forEach((code, index) => {
+        const row = worksheet.getRow(nextRow + index);
+        row.getCell(2).value = code; // Coloca el código en la columna B
+        row.commit();
+    });
+
+    worksheet.columns.forEach(column => {
+        let maxLength = 0;
+        column.eachCell({ includeEmpty: true }, (cell) => {
+            const cellValue = cell.value ? cell.value.toString() : "";
+            maxLength = Math.max(maxLength, cellValue.length);
+        });
+        column.width = maxLength + 2;
+    });
+
+    const uint8Array = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([uint8Array], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'nuevo_archivo.xlsx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    successModal.style.display = "flex";
+}
+
+closeModalButton.addEventListener('click', () => {
+    successModal.style.display = "none";
+    location.reload();
+});
+
+exportButton.addEventListener('click', exportToExcel);
