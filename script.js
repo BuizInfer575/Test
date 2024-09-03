@@ -58,34 +58,43 @@ function procesarInput(inputElement, validarPatron, siguienteInput) {
 barcodeInput1.addEventListener('input', () => procesarInput(barcodeInput1, validarPatron1, barcodeInput2));
 barcodeInput2.addEventListener('input', () => procesarInput(barcodeInput2, validarPatron2, barcodeInput1));
 
-// Función para exportar los códigos a un archivo Excel
+// Función para exportar los códigos a un archivo Excel utilizando ExcelJS en el navegador
 async function exportToExcel() {
     const workbook = new ExcelJS.Workbook();
+
+    // Cargar la plantilla existente desde un archivo local (necesitarás un servidor para pruebas locales)
     const response = await fetch('plantilla.xlsx');
     const arrayBuffer = await response.arrayBuffer();
     await workbook.xlsx.load(arrayBuffer);
 
-    const worksheet = workbook.getWorksheet(1);
+    const worksheet = workbook.getWorksheet(1);  // Asume que quieres trabajar con la primera hoja
 
-    let nextRow = 2; // B2
+    // Encontrar la última fila con datos
+    const lastRow = worksheet.lastRow;
+    let nextRow = 2; //B2
+
+    // Añadir datos a las filas subsiguientes
     scannedCodes.forEach((code, index) => {
         const row = worksheet.getRow(nextRow + index);
-        row.getCell(2).value = code; // Coloca el código en la columna B
+        row.getCell(2).value = code;  // Coloca el código en la columna B
         row.commit();
     });
 
+    // Ajustar el ancho de las columnas según el contenido de la primera fila
     worksheet.columns.forEach(column => {
         let maxLength = 0;
         column.eachCell({ includeEmpty: true }, (cell) => {
             const cellValue = cell.value ? cell.value.toString() : "";
             maxLength = Math.max(maxLength, cellValue.length);
         });
-        column.width = maxLength + 2;
+        column.width = maxLength + 2; // Agrega un pequeño margen
     });
 
+    // Crear un archivo de descarga en el navegador
     const uint8Array = await workbook.xlsx.writeBuffer();
     const blob = new Blob([uint8Array], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
 
+    // Crear un enlace de descarga
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -94,6 +103,7 @@ async function exportToExcel() {
     a.click();
     document.body.removeChild(a);
 
+    // Mostrar el modal después de guardar el archivo
     successModal.style.display = "flex";
 }
 
