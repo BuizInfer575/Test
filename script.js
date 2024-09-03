@@ -6,16 +6,6 @@ let scannedCodes = [];
 let firstCode = "";
 let inputTimeout = null;
 
-function validarPatron1(codigo) {
-    const patron = /^[A-Z0-9]+ [A-Z0-9]+$/;
-    return patron.test(codigo);
-}
-
-function validarPatron2(codigo) {
-    const patron = /^[A-Z0-9]+ [0-9]+$/;
-    return patron.test(codigo);
-}
-
 barcodeInput1.addEventListener('focusout', () => {
     barcodeInput1.focus();
 });
@@ -24,24 +14,19 @@ barcodeInput1.addEventListener('input', () => {
     clearTimeout(inputTimeout);
     inputTimeout = setTimeout(() => {
         barcodeInput1.value = '';  
-    }, 500);  // Mostrar el texto por medio segundo (500ms)
+    }, 100);  
 });
 
 barcodeInput1.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
-        clearTimeout(inputTimeout);  // Cancelar el borrado automático
-
         const code = barcodeInput1.value.trim();
-        if (validarPatron1(code)) {
-            firstCode = code.split(' ')[0];  // Guardar la parte antes del espacio
+        if (code) {
+            firstCode = code;
             barcodeInput1.disabled = true;  
             barcodeInput2.disabled = false; 
             barcodeInput2.focus();          
             barcodeInput1.value = '';       
-        } else {
-            toastr.error('El código no cumple con el patrón requerido');
-            barcodeInput1.value = ''; 
         }
     }
 });
@@ -54,23 +39,19 @@ barcodeInput2.addEventListener('input', () => {
     clearTimeout(inputTimeout);
     inputTimeout = setTimeout(() => {
         barcodeInput2.value = '';  
-    }, 500);  // Mostrar el texto por medio segundo (500ms)
+    }, 100);  
 });
 
 barcodeInput2.addEventListener('keydown', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
-        clearTimeout(inputTimeout);  // Cancelar el borrado automático
-
         const code = barcodeInput2.value.trim();
-        if (validarPatron2(code)) {
-            secondCode = code.split(' ')[0];  // Guardar la parte antes del espacio
-
-            if (firstCode === secondCode) {
+        if (code) {
+            if (firstCode === code) {
                 toastr.success('Los códigos coinciden');
-                scannedCodes.push(secondCode); 
+                scannedCodes.push(firstCode); 
                 const codeElement = document.createElement('p');
-                codeElement.textContent = secondCode;
+                codeElement.textContent = firstCode;
                 scannedCodesDiv.appendChild(codeElement);
             } else {
                 toastr.error('Los códigos no coinciden');
@@ -80,12 +61,6 @@ barcodeInput2.addEventListener('keydown', (event) => {
             barcodeInput2.disabled = true;
             barcodeInput1.value = '';
             barcodeInput2.value = '';
-            barcodeInput1.focus();
-        } else {
-            toastr.error('El código no cumple con el patrón requerido');
-            barcodeInput2.value = ''; 
-            barcodeInput1.disabled = false;
-            barcodeInput2.disabled = true;
             barcodeInput1.focus();
         }
     }
@@ -136,32 +111,15 @@ async function exportToExcel() {
     a.click();
     document.body.removeChild(a);
 
-    // Una vez que el archivo Excel se haya exportado, envía la solicitud AJAX
-    enviarCorreo();
-
     // Mostrar el modal después de guardar el archivo
     successModal.style.display = "flex";
 }
+
 
 // Cerrar el modal y recargar la página
 closeModalButton.addEventListener('click', () => {
     successModal.style.display = "none";
     location.reload();
 });
-
-function enviarCorreo() {
-    $.ajax({
-        url: 'Test.php', // Ruta al archivo PHP
-        type: 'POST',
-        success: function (response) {
-            console.log('Correo enviado exitosamente:', response);
-            toastr.success('Correo enviado exitosamente');
-        },
-        error: function (xhr, status, error) {
-            console.error('Error al enviar el correo:', error);
-            toastr.error('Error al enviar el correo');
-        }
-    });
-}
 
 exportButton.addEventListener('click', exportToExcel);
