@@ -6,12 +6,12 @@ let firstCode = "";
 let inputTimeout = null;
 
 function validarPatron1(codigo) {
-    const patron = /^[A-Z0-9]+[ -]?[A-Z0-9]+$/i; // Incluye guiones y letras minúsculas
+    const patron = /^[A-Z0-9]+ [A-Z0-9]+$/;; // Incluye guiones y letras minúsculas
     return patron.test(codigo);
 }
 
 function validarPatron2(codigo) {
-    const patron = /^[A-Z0-9]+$/i; // Incluye guiones y letras minúsculas
+    const patron = /^[A-Z0-9]+ [0-9]+$/;; // Incluye guiones y letras minúsculas
     return patron.test(codigo);
 }
 
