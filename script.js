@@ -13,45 +13,32 @@ barcodeInput1.addEventListener('focusout', () => {
 barcodeInput1.addEventListener('input', () => {
     clearTimeout(inputTimeout);
     inputTimeout = setTimeout(() => {
-        barcodeInput1.value = '';  
-    }, 100);  
-});
-
-barcodeInput1.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        event.preventDefault();
         const code = barcodeInput1.value.trim();
-        if (code) {
-            firstCode = code;
+        if (validarPatron1(code)) {
+            firstCode = code.split(' ')[0];  // Guardar la parte antes del espacio
             barcodeInput1.disabled = true;  
             barcodeInput2.disabled = false; 
             barcodeInput2.focus();          
             barcodeInput1.value = '';       
+        } else {
+            toastr.error('El código no cumple con el patrón requerido');
+            barcodeInput1.value = ''; 
         }
-    }
-});
-
-barcodeInput2.addEventListener('focusout', () => {
-    barcodeInput2.focus();
+    }, 500);  // Mostrar el texto por medio segundo (500ms)
 });
 
 barcodeInput2.addEventListener('input', () => {
     clearTimeout(inputTimeout);
     inputTimeout = setTimeout(() => {
-        barcodeInput2.value = '';  
-    }, 100);  
-});
-
-barcodeInput2.addEventListener('keydown', (event) => {
-    if (event.key === 'Enter') {
-        event.preventDefault();
         const code = barcodeInput2.value.trim();
-        if (code) {
-            if (firstCode === code) {
+        if (validarPatron2(code)) {
+            const secondCode = code.split(' ')[0];  // Guardar la parte antes del espacio
+
+            if (firstCode === secondCode) {
                 toastr.success('Los códigos coinciden');
-                scannedCodes.push(firstCode); 
+                scannedCodes.push(secondCode); 
                 const codeElement = document.createElement('p');
-                codeElement.textContent = firstCode;
+                codeElement.textContent = secondCode;
                 scannedCodesDiv.appendChild(codeElement);
             } else {
                 toastr.error('Los códigos no coinciden');
@@ -62,9 +49,16 @@ barcodeInput2.addEventListener('keydown', (event) => {
             barcodeInput1.value = '';
             barcodeInput2.value = '';
             barcodeInput1.focus();
+        } else {
+            toastr.error('El código no cumple con el patrón requerido');
+            barcodeInput2.value = ''; 
+            barcodeInput1.disabled = false;
+            barcodeInput2.disabled = true;
+            barcodeInput1.focus();
         }
-    }
+    }, 500);  // Mostrar el texto por medio segundo (500ms)
 });
+
 
 // Función para exportar los códigos a un archivo Excel utilizando ExcelJS en el navegador
 async function exportToExcel() {
